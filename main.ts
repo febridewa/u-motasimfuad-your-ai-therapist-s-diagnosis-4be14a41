@@ -19,10 +19,13 @@ import { mkdirSync, readFileSync, writeFileSync } from "node:fs";
 const LINE =
   "Clinical finding: you rehearse arguments you will never have, then lose them.";
 
-// The gate only accepts 1–200 characters of non-blank UTF-8 text;
+// The gate only accepts 1–200 characters of non-blank UTF-8 text on ONE line;
 // fail loudly here rather than shipping an invalid entry.
 if (LINE.length < 1 || LINE.length > 200 || LINE.trim().length === 0) {
   throw new Error(`entry line must be 1-200 chars, got ${LINE.length}`);
+}
+if (/[\r\n]/.test(LINE)) {
+  throw new Error("entry line must be a single line (no line breaks)");
 }
 
 mkdirSync("/output", { recursive: true });
